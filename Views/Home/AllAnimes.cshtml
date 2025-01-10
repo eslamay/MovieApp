@@ -1,0 +1,101 @@
+﻿@using Microsoft.AspNetCore.Html
+@model List<Anime>
+@{
+	int pageIndex = (int)ViewData["PageIndex"]!;
+	int TotalPages = (int)ViewData["TotalPages"]!;
+
+	string search = (string)ViewData["Search"]!;
+
+	string column = (string)ViewData["Column"]!;
+	string orderBy = (string)ViewData["OrderBy"]!;
+
+	HtmlString getArrow(string tableColumn)
+	{
+		if (tableColumn != column)
+		{
+			return new HtmlString("");
+		}
+
+		if (orderBy == "desc")
+		{
+			return new HtmlString("&darr;");
+		}
+
+		return new HtmlString("&uarr;");
+	}
+}
+
+<h2 class="text-center mb-5">All Animes</h2>
+
+<div class="row md-5">
+	<div class="col">
+		<i class="bi bi-filter-circle-fill text-primary"></i> Sort by :
+		<table class="table">
+	       <thead>
+		      <tr>
+			    <th style="cursor:pointer;" onclick="sortTable('Year')">Year @getArrow("Year")</th>
+			    <th style="cursor:pointer;" onclick="sortTable('Rate')">Rate @getArrow("Rate")</th>
+			 </tr>
+	       </thead>
+	</table>
+	</div>
+	<div class="col">
+		<form class="d-flex">
+			<input class="form-control me-2" type="search" name="search" value="@search" placeholder="Search by Title or Genre" aria-label="Search">
+			<button class="btn btn-outline-success" type="submit">Search</button>
+		</form>
+	</div>
+</div>
+
+<script>
+	function sortTable(column) {
+		let orderBy="desc"
+		let currentColumnn="@column"
+		let currentOrder="@orderBy"
+		if(column===currentColumnn)
+		{
+			if(currentOrder==="asc")
+			{
+				orderBy="desc"
+			}
+			else
+			{
+				orderBy="asc"
+			}
+		}
+		window.location.href = "?search=@(search)&column=" + column + "&orderBy="+orderBy
+	}
+</script>
+
+<div class="row mb-5 g-3">
+	@foreach (var anime in Model)
+	{
+		<div class="col-lg-3 col-md-6">
+			<div class="rounded border shadow p-3 text-center h-100">
+				<img src="/animeImages/@anime.ImageFileName" class="img-fluid" alt="...."
+					 style="height:180px;object-fit:contain;" />
+				<hr />
+				<h5 class="py-2">@anime.Title @(anime.Year)</h5>
+
+				<a class="btn btn-primary btn-sm mb-2"
+				   asp-controller="Animes" asp-action="Details" asp-route-id="@anime.Id" role="button">Watch</a>
+				<h6 class="py-2">Rating: @anime.Rate <i class="bi bi-star-fill text-warning"></i></h6>
+			</div>
+		</div>
+	}
+</div>
+
+<nav>
+	<ul class="pagination">
+		@for (int i = 1; i <= TotalPages; i++)
+		{
+			string active = "";
+			if (i == pageIndex) active = "active";
+			<li class="page-item" @active>
+				<a class="page-link" asp-route-PageIndex="@i"
+				   asp-route-Search="@search" asp-route-column="@column" asp-route-orderBy="@orderBy">@i</a>
+			</li>
+		}
+	</ul>
+</nav>
+

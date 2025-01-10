@@ -1,0 +1,110 @@
+﻿@using Microsoft.AspNetCore.Html
+@model List<Anime>
+@{
+	int pageIndex = (int)ViewData["PageIndex"]!;
+	int TotalPages = (int)ViewData["TotalPages"]!;
+
+	string search = (string)ViewData["Search"]!;
+
+	string column = (string)ViewData["Column"]!;
+	string orderBy = (string)ViewData["OrderBy"]!;
+
+	HtmlString getArrow(string tableColumn)
+	{
+		if (tableColumn != column)
+		{
+			return new HtmlString("");
+		}
+
+		if (orderBy == "desc")
+		{
+			return new HtmlString("&darr;");
+		}
+
+		return new HtmlString("&uarr;");
+	}
+}
+
+<h2 class="text-center mb-5">List of Animes</h2>
+
+<div class="row md-5">
+	<div class="col">
+		<a class="btn btn-primary" asp-controller="Animes" asp-action="Create">New Anime</a>
+	</div>
+	<div class="col">
+		<form class="d-flex">
+			<input class="form-control me-2" type="search" name="search" value="@search" placeholder="Search by Title or Genre" aria-label="Search">
+			<button class="btn btn-outline-success" type="submit">Search</button>
+		</form>
+	</div>
+</div>
+
+<script>
+	function sortTable(column) {
+		let orderBy="desc"
+		let currentColumnn="@column"
+		let currentOrder="@orderBy"
+		if(column===currentColumnn)
+		{
+			if(currentOrder==="asc")
+			{
+				orderBy="desc"
+			}
+			else
+			{
+				orderBy="asc"
+			}
+		}
+		window.location.href = "?search=@(search)&column=" + column + "&orderBy="+orderBy
+	}
+</script>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th style="cursor:pointer;" onclick="sortTable('Id')">ID @getArrow("Id")</th>
+			<th style="cursor:pointer;" onclick="sortTable('Title')">Title @getArrow("Title")</th>
+			<th style="cursor:pointer;" onclick="sortTable('Genre')">Genre @getArrow("Genre")</th>
+			<th style="cursor:pointer;" onclick="sortTable('Year')">Year @getArrow("Year")</th>
+			<th style="cursor:pointer;" onclick="sortTable('Rate')">Rate @getArrow("Rate")</th>
+			<th>Image</th>
+			<th>Description</th>
+			<th>Action</th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var anime in Model)
+		{
+			<tr>
+				<td>@anime.Id</td>
+				<td>@anime.Title</td>
+				<td>@anime.Genre</td>
+				<td>@anime.Year</td>
+				<td>@anime.Rate</td>
+				<td><img src="/animeImages/@anime.ImageFileName" width="100" /></td>
+				<td>@anime.Description</td>
+				<td style="white-space:nowrap">
+					<a class="btn btn-primary btn-sm" asp-controller="Animes" asp-action="Edit" asp-route-id="@anime.Id">Edit</a>
+
+					<a class="btn btn-danger btn-sm" asp-controller="Animes" asp-action="Delete"
+					   onclick="return confirm('Are you sure?')"
+					   asp-route-id="@anime.Id">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<nav>
+	<ul class="pagination">
+		@for (int i = 1; i <= TotalPages; i++)
+		{
+			string active = "";
+			if (i == pageIndex) active = "active";
+			<li class="page-item" @active>
+				<a class="page-link" asp-route-PageIndex="@i"
+				   asp-route-Search="@search" asp-route-column="@column" asp-route-orderBy="@orderBy">@i</a>
+			</li>
+		}
+	</ul>
+</nav>

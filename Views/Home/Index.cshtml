@@ -1,0 +1,97 @@
+﻿@model (List<MovieApp.Models.Movie> Movies, List<MovieApp.Models.Series> Series, List<MovieApp.Models.Anime> Animes)
+@{
+    ViewData["Title"] = "Home Page";
+    ViewData["HomePage"] = true;
+}
+
+<div style="background-color:#08618d;">
+    <div class="container text-white py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-md-6">
+                <h1 class="mb-5 display-2"><strong>Best Movies to Watch</strong></h1>
+                <p>
+                    Find a large selection of newest movies from most popular
+                    genres and with the best quality.
+                </p>
+            </div>
+            <div class="col-md-6 text-white">
+                <img src="/images/MovieIcon.png" class="img-fluid" alt="hero" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light">
+    <div class="container py-4">
+        <h2 class="pb-4 text-center ">Top Movies</h2>
+
+        <div class="row mb-5 g-3">
+            @foreach (var movie in Model.Movies)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="rounded border shadow p-3 text-center h-100">
+                        <img src="/movieImages/@movie.ImageFileName" class="img-fluid" alt="...."
+                             style="height:180px;object-fit:contain;" />
+                        <hr />
+                        <h5 class="py-2">@movie.Title @(movie.Year)</h5>
+                       
+                        <a class="btn btn-primary btn-sm mb-2"
+                           asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id" role="button">Watch</a>
+                        <h6 class="py-2">Rating: @movie.Rate <i class="bi bi-star-fill text-warning"></i></h6>
+                    </div>
+                </div>
+            }
+            <a class="btn btn-primary btn-sm mb-2" asp-action="AllMovies" asp-controller="Home"><h4>More movies to watch....</h4></a>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light">
+    <div class="container py-4">
+        <h2 class="pb-4 text-center ">Top Series</h2>
+
+        <div class="row mb-5 g-3">
+            @foreach (var series in Model.Series)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="rounded border shadow p-3 text-center h-100">
+                        <img src="/seriesImages/@series.ImageFileName" class="img-fluid" alt="...."
+                             style="height:180px;object-fit:contain;" />
+                        <hr />
+                        <h5 class="py-2">@series.Title @(series.Year)</h5>
+
+                        <a class="btn btn-primary btn-sm mb-2"
+                           asp-controller="Series" asp-action="Details" asp-route-id="@series.Id" role="button">Watch</a>
+                        <h6 class="py-2">Rating: @series.Rate <i class="bi bi-star-fill text-warning"></i></h6>
+                    </div>
+                </div>
+            }
+            <a class="btn btn-primary btn-sm mb-2" asp-action="AllSeries" asp-controller="Home"><h4>More series to watch....</h4></a>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light">
+    <div class="container py-4">
+        <h2 class="pb-4 text-center ">Top Animes</h2>
+
+        <div class="row mb-5 g-3">
+            @foreach (var anime in Model.Animes)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <div class="rounded border shadow p-3 text-center h-100">
+                        <img src="/animeImages/@anime.ImageFileName" class="img-fluid" alt="...."
+                             style="height:180px;object-fit:contain;" />
+                        <hr />
+                        <h5 class="py-2">@anime.Title @(anime.Year)</h5>
+
+                        <a class="btn btn-primary btn-sm mb-2"
+                           asp-controller="Animes" asp-action="Details" asp-route-id="@anime.Id" role="button">Watch</a>
+                        <h6 class="py-2">Rating: @anime.Rate <i class="bi bi-star-fill text-warning"></i></h6>
+                    </div>
+                </div>
+            }
+            <a class="btn btn-primary btn-sm mb-2" asp-action="AllAnimes" asp-controller="Home"><h4>More series to watch....</h4></a>
+        </div>
+    </div>
+</div>
